@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://it22143204:ZfTg6QRxfTY1Fgam@cluster0.any78ur.mongodb.net/FoodGram?retryWrites=true&w=majority&appName=Cluster0
+      database: Micro-Service
+  application:
+    name: user-service
+
+server:
+  port: 8082

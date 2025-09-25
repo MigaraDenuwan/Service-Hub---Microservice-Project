@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+spec:
+  ports:
+    - port: 8082
+  selector:
+    app: user-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: migarad/user-service:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: mongodb://mongodb:27017/Micro-Service
+            - name: SPRING_APPLICATION_NAME
+              value: user-service
+            - name: SERVER_PORT
+              value: "8082"

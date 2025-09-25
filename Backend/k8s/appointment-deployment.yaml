@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: appointment-service
+spec:
+  ports:
+    - port: 5002
+  selector:
+    app: appointment-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appointment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: appointment-service
+  template:
+    metadata:
+      labels:
+        app: appointment-service
+    spec:
+      containers:
+        - name: appointment-service
+          image: migarad/appointment-service:latest
+          ports:
+            - containerPort: 5002
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USER
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "1238450"
+            - name: DB_NAME
+              value: "appointments_db"
+            - name: PROVIDER_SERVICE_URL
+              value: http://provider-service:5001
+            - name: PORT
+              value: "5002"
+            - name: NODE_ENV
+              value: production
