@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Provider } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_URL = import.meta.env.VITE_PROVIDER_SERVICE_URL || 'http://localhost:5001/api';
 
 // Create axios instance with default config
 const providerApi = axios.create({

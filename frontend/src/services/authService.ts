@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { LoginData, RegisterData } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_URL = import.meta.env.VITE_USER_SERVICE_URL || 'http://localhost:8082/api';
 
 // Create axios instance with default config
 const authApi = axios.create({

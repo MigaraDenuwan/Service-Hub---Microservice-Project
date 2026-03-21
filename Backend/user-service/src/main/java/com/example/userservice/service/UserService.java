@@ -6,6 +6,9 @@ import com.example.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import java.util.HashMap;
+import java.util.Map;
 
 import java.util.Optional;
 
@@ -18,13 +21,30 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private RestTemplate restTemplate;
+
     public User register(RegisterRequest request) {
         User user = new User();
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        // Notify user via notification-service
+        try {
+            Map<String, String> notificationRequest = new HashMap<>();
+            notificationRequest.put("email", savedUser.getEmail());
+            notificationRequest.put("message", "Welcome to Service Hub, " + savedUser.getFullName() + "! Your account has been successfully created.");
+            
+            restTemplate.postForObject("http://notification-service/api/notifications/send", notificationRequest, String.class);
+            System.out.println("Registration Notification triggered for: " + savedUser.getEmail());
+        } catch (Exception e) {
+            System.err.println("Failed to send registration notification: " + e.getMessage());
+        }
+
+        return savedUser;
     }
 
     public Optional<User> authenticate(LoginRequest request) {

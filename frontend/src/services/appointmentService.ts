@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Appointment } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+const API_URL = import.meta.env.VITE_APPOINTMENT_SERVICE_URL || 'http://localhost:5002/api';
 
 // Create axios instance with default config
 const appointmentApi = axios.create({

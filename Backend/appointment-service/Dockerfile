@@ -6,8 +6,12 @@ RUN apt-get update && apt-get install -y netcat-traditional postgresql-client &&
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
+# Copy app source last to leverage layer caching
 COPY . .
-RUN chmod +x wait-for-postgres.sh
+RUN sed -i 's/\r$//' wait-for-postgres.sh && chmod +x wait-for-postgres.sh
+
 EXPOSE 5002
 
-CMD ["./wait-for-postgres.sh", "--", "node", "index.js"]
+# Explicitly use absolute path and disable node's default entrypoint if necessary
+ENTRYPOINT ["/app/wait-for-postgres.sh"]
+CMD ["node", "index.js"]

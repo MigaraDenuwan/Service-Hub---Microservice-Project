@@ -115,8 +115,8 @@ jobs:
     needs: docker-build-push
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Deploy to Cloud (Render / Remote server)
+      - name: Deploy to Cloud (AWS / Remote server)
         run: |
           echo "Triggering deployment webhook..."
-          # Example for Render Webhook: curl -X POST ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          # Example for AWS Webhook: curl -X POST ${{ secrets.DEPLOY_WEBHOOK_URL }}
           echo "Deployment triggered successfully!"
