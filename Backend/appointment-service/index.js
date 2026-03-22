@@ -4,6 +4,9 @@ import cors from 'cors';
 import sequelize from './config/db.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 
+// Import and initialize Eureka client
+import './eureka-client.js';
+
 dotenv.config();
 
 const app = express();
@@ -13,6 +16,11 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+
+// Health Check Endpoint for Eureka
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'UP' });
+});
 
 app.use('/api/appointments', appointmentRoutes);
 

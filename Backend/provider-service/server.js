@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const providerRoutes = require('./routes/providerRoutes');
 
+// Import and initialize Eureka client
+require('./eureka-client');
+
 dotenv.config();
 const app = express();
 
@@ -14,6 +17,11 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Health Check Endpoint for Eureka
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'UP' });
+});
 
 const connectDB = require('./config/db');
 connectDB();

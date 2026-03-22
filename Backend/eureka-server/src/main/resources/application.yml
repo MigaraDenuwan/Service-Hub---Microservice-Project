@@ -22,3 +22,9 @@ management:
   endpoint:
     health:
       show-details: always
+
+# To integrate SonarCloud
+sonar:
+  projectKey: MigaraDenuwan_Service-Hub---Microservice-Project
+  organization: migaradenuwan
+  host.url: https://sonarcloud.io

@@ -15,3 +15,9 @@ eureka:
       defaultZone: ${EUREKA_SERVER_URL:http://eureka-server:8761/eureka/}
   instance:
     prefer-ip-address: true
+
+# To integrate SonarCloud
+sonar:
+  projectKey: MigaraDenuwan_Service-Hub---Microservice-Project
+  organization: migaradenuwan
+  host.url: https://sonarcloud.io

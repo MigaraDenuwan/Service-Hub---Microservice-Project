@@ -28,6 +28,6 @@ spring:
 
 # To integrate SonarCloud
 sonar:
-  projectKey: my-notification-service
-  organization: my-org
+  projectKey: MigaraDenuwan_Service-Hub---Microservice-Project
+  organization: migaradenuwan
   host.url: https://sonarcloud.io
