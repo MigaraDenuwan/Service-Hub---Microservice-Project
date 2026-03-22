@@ -28,6 +28,19 @@ services:
       retries: 5
       start_period: 30s
 
+  eureka-server:
+    build: ./eureka-server
+    container_name: eureka-server
+    restart: always
+    ports:
+      - "8761:8761"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
   user-service:
     build: ./user-service
     container_name: user-service
@@ -36,10 +49,12 @@ services:
       - "8082:8082"
     depends_on:
       - mongodb
+      - eureka-server
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://mongodb:27017/Micro-Service
+      SPRING_DATA_MONGODB_URI: mongodb+srv://it22143204:ZfTg6QRxfTY1Fgam@cluster0.any78ur.mongodb.net/Micro-Service-user?retryWrites=true&w=majority&appName=Cluster0
       SPRING_APPLICATION_NAME: user-service
       SERVER_PORT: 8082
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
 
   provider-service:
     build: ./provider-service
@@ -49,8 +64,9 @@ services:
       - "5001:5001"
     depends_on:
       - mongodb
+      - eureka-server
     environment:
-      MONGO_URI: mongodb://mongodb:27017/FoodGram
+      MONGO_URI: mongodb+srv://it22143204:ZfTg6QRxfTY1Fgam@cluster0.any78ur.mongodb.net/Micro-Service-provider?retryWrites=true&w=majority&appName=Cluster0
       PORT: 5001
 
   appointment-service:
@@ -63,6 +79,8 @@ services:
       postgres:
         condition: service_healthy
       provider-service:
+        condition: service_started
+      eureka-server:
         condition: service_started
     environment:
       DB_HOST: postgres
@@ -82,9 +100,12 @@ services:
     restart: always
     ports:
       - "8084:8084"
+    depends_on:
+      - eureka-server
     environment:
       SPRING_APPLICATION_NAME: notification-service
       SERVER_PORT: 8084
+      EUREKA_SERVER_URL: http://eureka-server:8761/eureka/
 
   frontend:
     build: ../frontend

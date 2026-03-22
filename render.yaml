@@ -1,4 +1,14 @@
 services:
+  # 0. Eureka Server (Spring Boot Service Discovery)
+  - type: web
+    name: eureka-server
+    env: docker
+    plan: free
+    image:
+      url: docker.io/migaradenuwan/eureka-server:latest
+    autoDeploy: true
+    healthCheckPath: /actuator/health
+
   # 1. User Service (Java / Spring Boot)
   - type: web
     name: user-service
@@ -19,6 +29,11 @@ services:
         sync: false
       - key: DB_URL
         sync: false
+      - key: EUREKA_SERVER_URL
+        fromService:
+          type: web
+          name: eureka-server
+          property: url
 
   # 2. Provider Service (Node.js / Express)
   - type: web
@@ -34,6 +49,11 @@ services:
         value: production
       - key: DB_URL
         sync: false
+      - key: EUREKA_SERVER_URL
+        fromService:
+          type: web
+          name: eureka-server
+          property: url
 
   # 3. Appointment Service (Node.js / Express)
   - type: web
@@ -55,6 +75,11 @@ services:
           property: url
       - key: DB_URL
         sync: false
+      - key: EUREKA_SERVER_URL
+        fromService:
+          type: web
+          name: eureka-server
+          property: url
 
   # 4. Notification Service (Java / Spring Boot)
   - type: web
@@ -74,6 +99,11 @@ services:
         sync: false
       - key: MAIL_PASSWORD
         sync: false
+      - key: EUREKA_SERVER_URL
+        fromService:
+          type: web
+          name: eureka-server
+          property: url
 
   # 5. Frontend (React / Vite)
   - type: web
