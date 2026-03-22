@@ -75,7 +75,9 @@ services:
       NODE_ENV: production
 
   notification-service:
-    build: ./notification-service
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
     container_name: notification-service
     restart: always
     ports:
