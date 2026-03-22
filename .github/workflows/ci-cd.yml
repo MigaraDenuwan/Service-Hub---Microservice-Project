@@ -18,10 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -34,7 +34,7 @@ jobs:
         run: mvn -B package --file Backend/notification-service/pom.xml -DskipTests
 
       - name: Set up Node.js 18
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
@@ -49,12 +49,12 @@ jobs:
     needs: build-and-test
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
@@ -74,44 +74,44 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Log in to Docker Hub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push User Service Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: Backend/user-service
           push: true
           tags: ${{ env.DOCKER_USER }}/user-service:latest
 
       - name: Build and push Notification Service Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: Backend/notification-service
           push: true
           tags: ${{ env.DOCKER_USER }}/notification-service:latest
           
       - name: Build and push Provider Service Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: Backend/provider-service
           push: true
           tags: ${{ env.DOCKER_USER }}/provider-service:latest
 
       - name: Build and push Appointment Service Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: Backend/appointment-service
           push: true
           tags: ${{ env.DOCKER_USER }}/appointment-service:latest
 
       - name: Build and push Frontend Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: frontend
           push: true
