@@ -1,0 +1,108 @@
+services:
+  # 1. User Service (Java / Spring Boot)
+  - type: web
+    name: user-service
+    env: docker # Using Docker image deployment
+    plan: free  # Free tier friendly
+    image:
+      url: docker.io/migaradenuwan/user-service:latest # Pulling from Docker Hub
+    autoDeploy: true # Automatically deploy when a new image is pushed
+    healthCheckPath: /actuator/health # Spring Boot health check path
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JWT_SECRET
+        sync: false # Set securely in the Render dashboard, do not commit
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_URL
+        sync: false
+
+  # 2. Provider Service (Node.js / Express)
+  - type: web
+    name: provider-service
+    env: docker
+    plan: free
+    image:
+      url: docker.io/migaradenuwan/provider-service:latest
+    autoDeploy: true
+    healthCheckPath: /api/health # Custom Express health check endpoint
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_URL
+        sync: false
+
+  # 3. Appointment Service (Node.js / Express)
+  - type: web
+    name: appointment-service
+    env: docker
+    plan: free
+    image:
+      url: docker.io/migaradenuwan/appointment-service:latest
+    autoDeploy: true
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Inter-Service Communication via Render internal logic
+      - key: PROVIDER_SERVICE_URL
+        fromService:
+          type: web
+          name: provider-service
+          property: url
+      - key: DB_URL
+        sync: false
+
+  # 4. Notification Service (Java / Spring Boot)
+  - type: web
+    name: notification-service
+    env: docker
+    plan: free
+    image:
+      url: docker.io/migaradenuwan/notification-service:latest
+    autoDeploy: true
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: RABBITMQ_HOST
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+
+  # 5. Frontend (React / Vite)
+  - type: web
+    name: frontend
+    env: docker
+    plan: free
+    image:
+      url: docker.io/migaradenuwan/frontend:latest
+    autoDeploy: true
+    healthCheckPath: / # Simple health check (serving the index file) 
+    envVars:
+      # Pass backend service URLs dynamically to the React frontend
+      - key: VITE_USER_SERVICE_URL
+        fromService:
+          type: web
+          name: user-service
+          property: url
+      - key: VITE_PROVIDER_SERVICE_URL
+        fromService:
+          type: web
+          name: provider-service
+          property: url
+      - key: VITE_APPOINTMENT_SERVICE_URL
+        fromService:
+          type: web
+          name: appointment-service
+          property: url
+      - key: VITE_NOTIFICATION_SERVICE_URL
+        fromService:
+          type: web
+          name: notification-service
+          property: url

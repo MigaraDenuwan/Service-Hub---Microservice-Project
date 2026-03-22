@@ -17,7 +17,7 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: *****
+      POSTGRES_PASSWORD: 1238450
       POSTGRES_DB: appointments_db
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -73,6 +73,28 @@ services:
       PROVIDER_SERVICE_URL: http://provider-service:5001
       PORT: 5002
       NODE_ENV: production
+
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    restart: always
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_APPLICATION_NAME: notification-service
+      SERVER_PORT: 8084
+
+  frontend:
+    build: ../frontend
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      - provider-service
+      - appointment-service
+      - notification-service
 
 volumes:
   mongo-data:

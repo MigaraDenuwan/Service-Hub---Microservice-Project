@@ -1,0 +1,104 @@
+openapi: 3.0.3
+info:
+  title: User Service API
+  description: API for managing users and authentication in the Service Hub platform.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8082
+    description: Local development server
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      description: Creates a new user profile with role assignment.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Bad request (e.g., username already exists)
+  /api/auth/login:
+    post:
+      summary: Login user
+      description: Authenticates user credentials and returns a JWT token.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR..."
+        '401':
+          description: Invalid credentials
+components:
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - username
+        - email
+        - password
+      properties:
+        username:
+          type: string
+          example: john_doe
+        email:
+          type: string
+          format: email
+          example: john@example.com
+        password:
+          type: string
+          format: password
+          example: mysecretpassword
+        role:
+          type: string
+          example: USER
+    LoginRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          example: john_doe
+        password:
+          type: string
+          format: password
+          example: mysecretpassword
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 64a7b9c9f4d2a1b3c8e9f0a1
+        username:
+          type: string
+          example: john_doe
+        email:
+          type: string
+          example: john@example.com
+        role:
+          type: string
+          example: USER
