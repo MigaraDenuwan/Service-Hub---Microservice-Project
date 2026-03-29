@@ -1,10 +1,26 @@
 import { Eureka } from 'eureka-js-client';
 import dotenv from 'dotenv';
+import axios from 'axios';
 dotenv.config();
 
 const port = process.env.PORT || 5002;
-const hostName = process.env.HOST_NAME || 'appointment-service';
-const ipAddr = process.env.IP_ADDR || '127.0.0.1';
+
+// Fetch the container’s private IP dynamically
+const getPrivateIp = async () => {
+  try {
+    if (process.env.ECS_CONTAINER_METADATA_URI_V4) {
+      const resp = await axios.get(`${process.env.ECS_CONTAINER_METADATA_URI_V4}/task`);
+      // Pick the first IP from the first network
+      return resp.data.Containers[0].Networks[0].IPv4Addresses[0];
+    }
+  } catch (err) {
+    console.error('Failed to get container IP, fallback to localhost', err);
+  }
+  return '127.0.0.1';
+};
+
+const ipAddr = await getPrivateIp();
+const hostName = ipAddr; // Use private IP as hostname
 
 const eurekaHost = process.env.EUREKA_HOST || 'eureka-server';
 const eurekaPort = process.env.EUREKA_PORT || 8761;
@@ -12,8 +28,8 @@ const eurekaPort = process.env.EUREKA_PORT || 8761;
 export const eurekaClient = new Eureka({
   instance: {
     app: 'appointment-service',
-    hostName: hostName,
-    ipAddr: ipAddr,
+    hostName,
+    ipAddr,
     statusPageUrl: `http://${hostName}:${port}/api/health`,
     port: {
       '$': port,
@@ -39,7 +55,7 @@ eurekaClient.start((error) => {
   console.log('Eureka Registration Complete!', error || '');
 });
 
-// Helper Function for Cross-Service Discovery
+// Helper for cross-service discovery
 export const getServiceUrl = (serviceName) => {
   const instances = eurekaClient.getInstancesByAppId(serviceName);
   if (instances && instances.length > 0) {
