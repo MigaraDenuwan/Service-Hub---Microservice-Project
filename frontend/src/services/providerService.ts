@@ -25,6 +25,7 @@ const mockProviders = [
   {
     _id: '1',
     name: 'Clean Home Services',
+    email: 'mock@example.com',
     serviceType: 'Cleaning',
     address: '123 Main St, Anytown',
     phone: '(555) 123-4567',
@@ -63,7 +64,7 @@ export const getProviderById = async (id: string) => {
   } catch (error) {
     console.error(`Error fetching provider with ID ${id}:`, error);
     // Return mock data for demonstration
-    return mockProviders.find(p => p._id === id) || null;
+    return (mockProviders.find(p => p._id === id) as unknown as Provider) || null;
   }
 };
 

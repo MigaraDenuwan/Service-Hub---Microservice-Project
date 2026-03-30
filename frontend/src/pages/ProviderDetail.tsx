@@ -29,7 +29,7 @@ const ProviderDetail: React.FC = () => {
       try {
         const data = await getProviderById(id);
         setProvider(data);
-        if (data.availability && data.availability.length > 0) {
+        if (data?.availability && data.availability.length > 0) {
           setActiveDay(data.availability[0].day);
         }
       } catch (err: unknown) {
