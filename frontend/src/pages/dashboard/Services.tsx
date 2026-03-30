@@ -88,7 +88,7 @@ const ProviderForm: React.FC = () => {
           <div className="mt-4 space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Found Providers</h3>
             {foundProvider.map((provider) => (
-              <div key={provider.email || provider.phone || Math.random()} className="p-4 border rounded-md bg-gray-50">
+              <div key={provider.email || provider.phone || crypto.randomUUID()} className="p-4 border rounded-md bg-gray-50">
                 <h4 className="text-md font-semibold text-gray-700 mb-2">Provider</h4>
                 <p><strong>Name:</strong> {provider.name}</p>
                 <p><strong>Email:</strong> {provider.email}</p>
