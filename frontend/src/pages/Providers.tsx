@@ -273,7 +273,7 @@ const Providers: React.FC = () => {
           if (loading) {
             return (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...new Array(6)].map((_, index) => (
+                {Array.from({ length: 6 }, (_, index) => (
                   <div key={`skeleton-${index}`} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
                     <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
                     <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
@@ -349,7 +349,7 @@ const Providers: React.FC = () => {
                       <div className="text-indigo-600 font-medium mb-3">{provider.serviceType}</div>
                       
                       <div className="flex items-center mb-4">
-                        {[...new Array(5)].map((_, i) => (
+                        {Array.from({ length: 5 }, (_, i) => (
                           <Star
                             key={`star-${provider._id}-${i}`}
                             size={16}

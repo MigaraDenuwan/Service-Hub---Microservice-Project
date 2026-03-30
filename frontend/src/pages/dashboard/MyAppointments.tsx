@@ -32,7 +32,7 @@ const MyAppointments: React.FC = () => {
   }, []);
 
   const handleCancel = async (id: string) => {
-    if (window.confirm('Are you sure you want to cancel this appointment?')) {
+    if (globalThis.confirm('Are you sure you want to cancel this appointment?')) {
       try {
         await cancelAppointment(id);
         setAppointments(appointments.map(appointment => 
@@ -113,117 +113,127 @@ const MyAppointments: React.FC = () => {
         </div>
       </div>
       
-      {loading ? (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="animate-pulse space-y-4">
-            <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div className="h-10 bg-gray-200 rounded w-1/4"></div>
-          </div>
-        </div>
-      ) : displayAppointments.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <div className="text-5xl mb-4">📅</div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            {activeTab === 'upcoming' 
-              ? 'No upcoming appointments' 
-              : 'No past appointments'}
-          </h3>
-          <p className="text-gray-600 mb-6">
-            {activeTab === 'upcoming' 
-              ? 'You don\'t have any upcoming appointments scheduled.' 
-              : 'You don\'t have any past appointment history.'}
-          </p>
-          {activeTab === 'upcoming' && (
-            <Link
-              to="/providers"
-              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-            >
-              <Calendar className="mr-2 h-5 w-5" />
-              Find Services
-            </Link>
-          )}
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {displayAppointments.map((appointment) => (
-            <div 
-              key={appointment.id} 
-              className="bg-white rounded-lg shadow-md overflow-hidden"
-            >
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      {appointment.providerName}
-                    </h3>
-                    <p className="text-indigo-600">{appointment.serviceType}</p>
-                  </div>
-                  <div className={`
-                    px-3 py-1 rounded-full text-xs font-medium 
-                    ${appointment.status === 'BOOKED' ? 'bg-green-100 text-green-800' : ''}
-                    ${appointment.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : ''}
-                    ${appointment.status === 'RESCHEDULED' ? 'bg-yellow-100 text-yellow-800' : ''}
-                    ${appointment.status === 'COMPLETED' ? 'bg-gray-100 text-gray-800' : ''}
-                  `}>
-                    {appointment.status}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="flex items-start">
-                    <Calendar className="h-5 w-5 text-gray-500 mr-2 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-500">Date</p>
-                      <p className="text-gray-800">
-                        {format(new Date(appointment.date), 'MMMM d, yyyy')}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-start">
-                    <Clock className="h-5 w-5 text-gray-500 mr-2 mt-0.5" />
-                    <div>
-                      <p className="text-sm text-gray-500">Time</p>
-                      <p className="text-gray-800">
-                        {format(new Date(`2000-01-01T${appointment.time}`), 'h:mm a')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                {activeTab === 'upcoming' && (
-                  <div className="flex space-x-3">
-                    <button
-                      onClick={() => openRescheduleModal(appointment)}
-                      className="flex-1 flex items-center justify-center px-4 py-2 border border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors"
-                    >
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                      Reschedule
-                    </button>
-                    <button
-                      onClick={() => handleCancel(appointment.id)}
-                      className="flex-1 flex items-center justify-center px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors"
-                    >
-                      <X className="h-4 w-4 mr-2" />
-                      Cancel
-                    </button>
-                  </div>
-                )}
-                
-                {activeTab === 'past' && appointment.status === 'COMPLETED' && (
-                  <Link
-                    to={`/providers/${appointment.providerId}`}
-                    className="block w-full text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
-                  >
-                    Leave a Review
-                  </Link>
-                )}
+      {(() => {
+        if (loading) {
+          return (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="animate-pulse space-y-4">
+                <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-10 bg-gray-200 rounded w-1/4"></div>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          );
+        }
+        
+        if (displayAppointments.length === 0) {
+          return (
+            <div className="bg-white rounded-lg shadow-md p-8 text-center">
+              <div className="text-5xl mb-4">📅</div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                {activeTab === 'upcoming' 
+                  ? 'No upcoming appointments' 
+                  : 'No past appointments'}
+              </h3>
+              <p className="text-gray-600 mb-6">
+                {activeTab === 'upcoming' 
+                  ? 'You don\'t have any upcoming appointments scheduled.' 
+                  : 'You don\'t have any past appointment history.'}
+              </p>
+              {activeTab === 'upcoming' && (
+                <Link
+                  to="/providers"
+                  className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                >
+                  <Calendar className="mr-2 h-5 w-5" />
+                  Find Services
+                </Link>
+              )}
+            </div>
+          );
+        }
+
+        return (
+          <div className="space-y-4">
+            {displayAppointments.map((appointment) => (
+              <div 
+                key={appointment.id} 
+                className="bg-white rounded-lg shadow-md overflow-hidden"
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {appointment.providerName}
+                      </h3>
+                      <p className="text-indigo-600">{appointment.serviceType}</p>
+                    </div>
+                    <div className={`
+                      px-3 py-1 rounded-full text-xs font-medium 
+                      ${appointment.status === 'BOOKED' ? 'bg-green-100 text-green-800' : ''}
+                      ${appointment.status === 'CANCELLED' ? 'bg-red-100 text-red-800' : ''}
+                      ${appointment.status === 'RESCHEDULED' ? 'bg-yellow-100 text-yellow-800' : ''}
+                      ${appointment.status === 'COMPLETED' ? 'bg-gray-100 text-gray-800' : ''}
+                    `}>
+                      {appointment.status}
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-start">
+                      <Calendar className="h-5 w-5 text-gray-500 mr-2 mt-0.5" />
+                      <div>
+                        <p className="text-sm text-gray-500">Date</p>
+                        <p className="text-gray-800">
+                          {format(new Date(appointment.date), 'MMMM d, yyyy')}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start">
+                      <Clock className="h-5 w-5 text-gray-500 mr-2 mt-0.5" />
+                      <div>
+                        <p className="text-sm text-gray-500">Time</p>
+                        <p className="text-gray-800">
+                          {format(new Date(`2000-01-01T${appointment.time}`), 'h:mm a')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {activeTab === 'upcoming' && (
+                    <div className="flex space-x-3">
+                      <button
+                        onClick={() => openRescheduleModal(appointment)}
+                        className="flex-1 flex items-center justify-center px-4 py-2 border border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-50 transition-colors"
+                      >
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Reschedule
+                      </button>
+                      <button
+                        onClick={() => handleCancel(appointment.id)}
+                        className="flex-1 flex items-center justify-center px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-50 transition-colors"
+                      >
+                        <X className="h-4 w-4 mr-2" />
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                  
+                  {activeTab === 'past' && appointment.status === 'COMPLETED' && (
+                    <Link
+                      to={`/providers/${appointment.providerId}`}
+                      className="block w-full text-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+                    >
+                      Leave a Review
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      })()}
       
       {/* Reschedule Modal */}
       {showRescheduleModal && selectedAppointment && (

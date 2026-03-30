@@ -275,7 +275,7 @@ const ProviderDetail: React.FC = () => {
                       </p>
                     </div>
                     <div className="flex">
-                      {[...new Array(5)].map((_, i) => (
+                      {Array.from({ length: 5 }, (_, i) => (
                         <Star 
                           key={`star-display-${i}`} 
                           size={16} 

@@ -22,7 +22,7 @@ const Register: React.FC = () => {
     const minLength = password.length >= 8;
     const hasUppercase = /[A-Z]/.test(password);
     const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
+    const hasNumber = /\d/.test(password);
     
     return {
       minLength,
@@ -190,9 +190,9 @@ const Register: React.FC = () => {
           </div>
           
           <div className="mb-6">
-            <label className="block text-gray-700 font-medium mb-2">
+            <span className="block text-gray-700 font-medium mb-2">
               I am a:
-            </label>
+            </span>
             <div className="flex space-x-4">
               <div className="flex items-center">
                 <input
