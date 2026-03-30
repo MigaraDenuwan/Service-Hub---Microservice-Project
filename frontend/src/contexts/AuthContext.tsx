@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect, ReactNode } from 'react';
+import { createContext, useState, useContext, useEffect, ReactNode, useMemo } from 'react';
 import { loginUser, registerUser } from '../services/authService';
 import { LoginData, RegisterData, UserType } from '../types';
 import { jwtDecode } from 'jwt-decode';
@@ -90,7 +90,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem('user');
   };
 
-  const value = {
+  const value = useMemo(() => ({
     user,
     token,
     isAuthenticated: !!token,
@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     login,
     register,
     logout
-  };
+  }), [user, token, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

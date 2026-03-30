@@ -5,11 +5,15 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost"})
 @RestController
 @RequestMapping("/api/notifications")
 public class NotificationController {
+
+    private static final Logger logger = LoggerFactory.getLogger(NotificationController.class);
 
     @Autowired
     private JavaMailSender mailSender;
@@ -25,10 +29,10 @@ public class NotificationController {
             
             mailSender.send(message);
             
-            System.out.println("Actual Email Sent to: " + request.getEmail());
+            logger.info("Actual Email Sent to: {}", request.getEmail());
             return ResponseEntity.ok("Email sent successfully!");
         } catch (Exception e) {
-            System.err.println("Error sending email: " + e.getMessage());
+            logger.error("Error sending email: {}", e.getMessage());
             return ResponseEntity.status(500).body("Error sending email: " + e.getMessage());
         }
     }

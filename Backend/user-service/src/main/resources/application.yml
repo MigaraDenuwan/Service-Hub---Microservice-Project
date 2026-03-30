@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      uri: mongodb+srv://it22143204:ZfTg6QRxfTY1Fgam@cluster0.any78ur.mongodb.net/Micro-Service-user?retryWrites=true&w=majority&appName=Cluster0
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/Micro-Service-user}
       database: Micro-Service
   application:
     name: user-service

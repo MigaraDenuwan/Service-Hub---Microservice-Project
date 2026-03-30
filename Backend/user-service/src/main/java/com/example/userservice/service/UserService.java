@@ -11,9 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -39,9 +43,9 @@ public class UserService {
             notificationRequest.put("message", "Welcome to Service Hub, " + savedUser.getFullName() + "! Your account has been successfully created.");
             
             restTemplate.postForObject("http://notification-service/api/notifications/send", notificationRequest, String.class);
-            System.out.println("Registration Notification triggered for: " + savedUser.getEmail());
+            logger.info("Registration Notification triggered for: {}", savedUser.getEmail());
         } catch (Exception e) {
-            System.err.println("Failed to send registration notification: " + e.getMessage());
+            logger.error("Failed to send registration notification: {}", e.getMessage());
         }
 
         return savedUser;

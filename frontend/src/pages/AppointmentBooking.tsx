@@ -113,15 +113,6 @@ const AppointmentBooking: React.FC = () => {
     }
   };
 
-  const filterDate = (date: Date) => {
-    if (!provider) return false;
-
-    const dayOfWeek = format(date, 'EEEE');
-    const hasDayAvailability = provider.availability.some(slot => slot.day === dayOfWeek);
-
-    return hasDayAvailability;
-  };
-
   if (loading) {
     return (
       <div className="pt-24 pb-16 min-h-screen bg-gray-50 flex justify-center">
@@ -201,16 +192,16 @@ const AppointmentBooking: React.FC = () => {
 
           <div className="p-6">
             <div className="mb-8">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+              <label htmlFor="appointment-date" className="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
               <div className="flex items-center">
                 <Calendar className="h-5 w-5 text-gray-500 mr-2" />
                 <DatePicker
+                  id="appointment-date"
                   selected={selectedDate}
                   onChange={date => {
                     setSelectedDate(date);
                     setSelectedTime('');
                   }}
-                  // filterDate={filterDate}
                   minDate={new Date()}
                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                   placeholderText="Select a date"
@@ -218,17 +209,15 @@ const AppointmentBooking: React.FC = () => {
                   required
                 />
               </div>
-              {/* {selectedDate &&  (
-                <p className="mt-2 text-sm text-red-600">No available time slots for this date.</p>
-              )} */}
             </div>
 
             {selectedDate && (
               <div className="mb-8">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Select Time</label>
+                <label htmlFor="appointment-time" className="block text-sm font-medium text-gray-700 mb-2">Select Time</label>
                 <div className="flex items-center">
                   <Clock className="h-5 w-5 text-gray-500 mr-2" />
                   <select
+                    id="appointment-time"
                     value={selectedTime}
                     onChange={e => setSelectedTime(e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"

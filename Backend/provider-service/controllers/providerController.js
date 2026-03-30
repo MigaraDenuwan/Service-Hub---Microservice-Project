@@ -2,7 +2,8 @@ const Provider = require('../models/Provider');
 
 exports.createProvider = async (req, res) => {
   try {
-    const provider = await Provider.create(req.body);
+    const { name, email, phone, serviceType, address, availability, reviews } = req.body;
+    const provider = await Provider.create({ name, email, phone, serviceType, address, availability, reviews });
     res.status(201).json(provider);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -30,7 +31,7 @@ exports.getProviderById = async (req, res) => {
 
 exports.getProviderByEmail = async (req, res) => {
   try {
-    const { email } = req.query;
+    const email = String(req.query.email);
     const provider = await Provider.find({ email });
 
     if (!provider) {

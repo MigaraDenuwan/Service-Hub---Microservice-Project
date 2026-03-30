@@ -14,7 +14,7 @@ const ProviderForm: React.FC = () => {
     address: '',
   });
 
-  const [foundProvider, setFoundProvider] = useState<any | null>([]);
+  const [foundProvider, setFoundProvider] = useState<any[]>([]);
 
   const userData = localStorage.getItem("user");
 
@@ -39,8 +39,8 @@ const ProviderForm: React.FC = () => {
         setFoundProvider(data);
         toast.success('Provider found');
       } catch (err: any) {
-        setFoundProvider(null);
-        if (err.response && err.response.status === 404) {
+        setFoundProvider([]);
+        if (err?.response?.status === 404) {
           toast.warn('No provider found with that email');
         } else {
           toast.error('Error fetching provider');
@@ -87,9 +87,9 @@ const ProviderForm: React.FC = () => {
       {foundProvider.length > 0 && (
           <div className="mt-4 space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Found Providers</h3>
-            {foundProvider.map((provider, index) => (
-              <div key={index} className="p-4 border rounded-md bg-gray-50">
-                <h4 className="text-md font-semibold text-gray-700 mb-2">Provider #{index + 1}</h4>
+            {foundProvider.map((provider) => (
+              <div key={provider.email || provider.phone || Math.random()} className="p-4 border rounded-md bg-gray-50">
+                <h4 className="text-md font-semibold text-gray-700 mb-2">Provider</h4>
                 <p><strong>Name:</strong> {provider.name}</p>
                 <p><strong>Email:</strong> {provider.email}</p>
                 <p><strong>Phone:</strong> {provider.phone}</p>

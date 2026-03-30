@@ -211,10 +211,11 @@ const Providers: React.FC = () => {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="serviceTypeFilter" className="block text-sm font-medium text-gray-700 mb-2">
                   Service Type
                 </label>
                 <select
+                  id="serviceTypeFilter"
                   value={filters.serviceType}
                   onChange={(e) => setFilters({ ...filters, serviceType: e.target.value })}
                   className="block w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
@@ -227,9 +228,9 @@ const Providers: React.FC = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="block text-sm font-medium text-gray-700 mb-2">
                   Minimum Rating
-                </label>
+                </span>
                 <div className="flex items-center space-x-2">
                   {[0, 1, 2, 3, 4, 5].map((rating) => (
                     <button
@@ -248,9 +249,9 @@ const Providers: React.FC = () => {
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <span className="block text-sm font-medium text-gray-700 mb-2">
                   Verification
-                </label>
+                </span>
                 <div className="flex items-center">
                   <input
                     type="checkbox"
@@ -268,110 +269,122 @@ const Providers: React.FC = () => {
           </motion.div>
         )}
         
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-                <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                <div className="flex mb-4">
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                </div>
-                <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
-                <div className="h-10 bg-gray-200 rounded w-full"></div>
-              </div>
-            ))}
-          </div>
-        ) : error ? (
-          <div className="bg-red-50 p-4 rounded-md text-red-600">
-            <p>{error}</p>
-          </div>
-        ) : displayProviders.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-lg shadow-sm">
-            <div className="text-5xl mb-4">🔍</div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">No providers found</h3>
-            <p className="text-gray-600 max-w-md mx-auto">
-              We couldn't find any providers matching your criteria. Try adjusting your filters or search term.
-            </p>
-            {(searchTerm || filters.serviceType || filters.minRating > 0 || filters.verifiedOnly) && (
-              <button
-                onClick={() => {
-                  setSearchTerm('');
-                  resetFilters();
-                }}
-                className="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-500"
-              >
-                <X size={16} className="mr-1" />
-                Clear all filters
-              </button>
-            )}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayProviders.map((provider) => {
-              const avgRating = getAverageRating(provider.reviews);
-              
-              return (
-                <motion.div
-                  key={provider._id}
-                  whileHover={{ y: -5 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
-                >
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-2">
-                      <h2 className="text-xl font-semibold text-gray-800">{provider.name}</h2>
-                      {provider.isVerified && (
-                        <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center">
-                          <CheckCircle size={12} className="mr-1" />
-                          Verified
-                        </span>
-                      )}
+        {(() => {
+          if (loading) {
+            return (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...new Array(6)].map((_, index) => (
+                  <div key={`skeleton-${index}`} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
+                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+                    <div className="flex mb-4">
+                      <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/4 mr-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/4"></div>
                     </div>
-                    
-                    <div className="text-indigo-600 font-medium mb-3">{provider.serviceType}</div>
-                    
-                    <div className="flex items-center mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          size={16}
-                          className={i < Math.round(avgRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}
-                        />
-                      ))}
-                      <span className="ml-2 text-sm text-gray-600">
-                        {avgRating.toFixed(1)} ({provider.reviews.length} reviews)
-                      </span>
-                    </div>
-                    
-                    <div className="space-y-2 mb-6">
-                      <div className="flex items-start">
-                        <MapPin size={18} className="text-gray-500 mr-2 mt-0.5 flex-shrink-0" />
-                        <span className="text-gray-600">{provider.address}</span>
-                      </div>
-                      <div className="flex items-center">
-                        <Phone size={18} className="text-gray-500 mr-2 flex-shrink-0" />
-                        <span className="text-gray-600">{provider.phone}</span>
-                      </div>
-                    </div>
-                    
-                    <Link
-                      to={`/providers/${provider._id}`}
-                      className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-2 px-4 rounded-md transition-colors"
-                    >
-                      View Profile
-                    </Link>
+                    <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-full mb-4"></div>
+                    <div className="h-10 bg-gray-200 rounded w-full"></div>
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
+                ))}
+              </div>
+            );
+          }
+          if (error) {
+            return (
+              <div className="bg-red-50 p-4 rounded-md text-red-600">
+                <p>{error}</p>
+              </div>
+            );
+          }
+          if (displayProviders.length === 0) {
+            return (
+              <div className="text-center py-12 bg-white rounded-lg shadow-sm">
+                <div className="text-5xl mb-4">🔍</div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No providers found</h3>
+                <p className="text-gray-600 max-w-md mx-auto">
+                  We couldn't find any providers matching your criteria. Try adjusting your filters or search term.
+                </p>
+                {(searchTerm || filters.serviceType || filters.minRating > 0 || filters.verifiedOnly) && (
+                  <button
+                    onClick={() => {
+                      setSearchTerm('');
+                      resetFilters();
+                    }}
+                    className="mt-4 inline-flex items-center text-indigo-600 hover:text-indigo-500"
+                  >
+                    <X size={16} className="mr-1" />
+                    Clear all filters
+                  </button>
+                )}
+              </div>
+            );
+          }
+          
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {displayProviders.map((provider) => {
+                const avgRating = getAverageRating(provider.reviews);
+                
+                return (
+                  <motion.div
+                    key={provider._id}
+                    whileHover={{ y: -5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    className="bg-white rounded-lg shadow-md overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-2">
+                        <h2 className="text-xl font-semibold text-gray-800">{provider.name}</h2>
+                        {provider.isVerified && (
+                          <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center">
+                            <CheckCircle size={12} className="mr-1" />
+                            Verified
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div className="text-indigo-600 font-medium mb-3">{provider.serviceType}</div>
+                      
+                      <div className="flex items-center mb-4">
+                        {[...new Array(5)].map((_, i) => (
+                          <Star
+                            key={`star-${provider._id}-${i}`}
+                            size={16}
+                            className={i < Math.round(avgRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}
+                          />
+                        ))}
+                        <span className="ml-2 text-sm text-gray-600">
+                          {avgRating.toFixed(1)} ({provider.reviews.length} reviews)
+                        </span>
+                      </div>
+                      
+                      <div className="space-y-2 mb-6">
+                        <div className="flex items-start">
+                          <MapPin size={18} className="text-gray-500 mr-2 mt-0.5 flex-shrink-0" />
+                          <span className="text-gray-600">{provider.address}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Phone size={18} className="text-gray-500 mr-2 flex-shrink-0" />
+                          <span className="text-gray-600">{provider.phone}</span>
+                        </div>
+                      </div>
+                      
+                      <Link
+                        to={`/providers/${provider._id}`}
+                        className="block w-full bg-indigo-600 hover:bg-indigo-700 text-white text-center py-2 px-4 rounded-md transition-colors"
+                      >
+                        View Profile
+                      </Link>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

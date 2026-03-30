@@ -91,14 +91,14 @@ const ProviderDetail: React.FC = () => {
 
   // Calculate average rating
   const getAverageRating = () => {
-    if (!provider || !provider.reviews.length) return 0;
+    if (!provider?.reviews?.length) return 0;
     const total = provider.reviews.reduce((sum, review) => sum + review.rating, 0);
     return total / provider.reviews.length;
   };
 
   // Get availability for the active day
   const getDayAvailability = () => {
-    if (!provider || !provider.availability) return [];
+    if (!provider?.availability) return [];
     return provider.availability.filter(slot => slot.day === activeDay);
   };
   
@@ -213,8 +213,8 @@ const ProviderDetail: React.FC = () => {
                     <div>
                       <p className="text-gray-700 mb-2">Available time slots on {activeDay}:</p>
                       <div className="grid grid-cols-3 gap-2">
-                        {dayAvailability.map((slot: Availability, index) => (
-                          <div key={index} className="bg-green-50 text-green-800 text-sm text-center py-1 px-2 rounded">
+                        {dayAvailability.map((slot: Availability) => (
+                          <div key={`${slot.day}-${slot.startTime}`} className="bg-green-50 text-green-800 text-sm text-center py-1 px-2 rounded">
                             {format(new Date(`2000-01-01T${slot.startTime}`), 'h:mm a')} - 
                             {format(new Date(`2000-01-01T${slot.endTime}`), 'h:mm a')}
                           </div>
@@ -261,8 +261,8 @@ const ProviderDetail: React.FC = () => {
                 <p className="text-gray-600">No reviews yet. Be the first to leave a review!</p>
               </div>
             ) : (
-              provider.reviews.map((review, index) => (
-                <div key={index} className="p-6 md:p-8">
+              provider.reviews.map((review) => (
+                <div key={`${review.userId}-${review.createdAt}`} className="p-6 md:p-8">
                   <div className="flex justify-between mb-3">
                     <div>
                       <p className="font-medium text-gray-800">User-{review.userId.substring(0, 5)}</p>
@@ -275,9 +275,9 @@ const ProviderDetail: React.FC = () => {
                       </p>
                     </div>
                     <div className="flex">
-                      {[...Array(5)].map((_, i) => (
+                      {[...new Array(5)].map((_, i) => (
                         <Star 
-                          key={i} 
+                          key={`star-display-${i}`} 
                           size={16} 
                           className={i < review.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'} 
                         />
@@ -316,10 +316,10 @@ const ProviderDetail: React.FC = () => {
             
             <form onSubmit={handleReviewSubmit} className="p-6">
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="rating-selection" className="block text-sm font-medium text-gray-700 mb-2">
                   Rating
                 </label>
-                <div className="flex space-x-2">
+                <div className="flex space-x-2" id="rating-selection">
                   {[1, 2, 3, 4, 5].map((rating) => (
                     <button
                       key={rating}

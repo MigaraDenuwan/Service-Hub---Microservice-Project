@@ -69,9 +69,9 @@ const Home: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {categories.map((category, index) => (
+            {categories.map((category) => (
               <motion.div
-                key={index}
+                key={category.name}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
                 className={`${category.color} rounded-xl p-6 text-center shadow-sm hover:shadow-md transition-all cursor-pointer`}
               >

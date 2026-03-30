@@ -16,15 +16,15 @@ const Footer: React.FC = () => {
               Connecting you with the best service providers in your area. Book appointments with ease and manage your schedule effortlessly.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link to="/" className="text-gray-400 hover:text-white transition-colors">
                 <Facebook size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              </Link>
+              <Link to="/" className="text-gray-400 hover:text-white transition-colors">
                 <Twitter size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
+              </Link>
+              <Link to="/" className="text-gray-400 hover:text-white transition-colors">
                 <Instagram size={20} />
-              </a>
+              </Link>
             </div>
           </div>
           
@@ -50,19 +50,19 @@ const Footer: React.FC = () => {
             <h3 className="text-white font-semibold text-lg mb-4">Service Categories</h3>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Home Cleaning</a>
+                <Link to="/" className="text-gray-400 hover:text-white transition-colors">Home Cleaning</Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Plumbing</a>
+                <Link to="/" className="text-gray-400 hover:text-white transition-colors">Plumbing</Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Electrical Work</a>
+                <Link to="/" className="text-gray-400 hover:text-white transition-colors">Electrical Work</Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Personal Training</a>
+                <Link to="/" className="text-gray-400 hover:text-white transition-colors">Personal Training</Link>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-white transition-colors">Consulting</a>
+                <Link to="/" className="text-gray-400 hover:text-white transition-colors">Consulting</Link>
               </li>
             </ul>
           </div>

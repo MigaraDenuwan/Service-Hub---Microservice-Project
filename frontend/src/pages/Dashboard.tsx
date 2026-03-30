@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Calendar, Package, Clock } from 'lucide-react';
+import { Calendar, Package } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 // Dashboard sub-pages
@@ -70,9 +70,7 @@ const Dashboard: React.FC = () => {
           <Routes>
             <Route path="/" element={<MyAppointments />} />
             {user?.role === 'provider' && (
-              <>
-                <Route path="/services" element={<Services />} />
-              </>
+              <Route path="/services" element={<Services />} />
             )}
           </Routes>
         </motion.div>
