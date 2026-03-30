@@ -33,6 +33,9 @@ jobs:
       - name: Build Notification Service with Maven
         run: mvn -B package --file Backend/notification-service/pom.xml -DskipTests
 
+      - name: Build Gateway Service with Maven
+        run: mvn -B package --file Backend/gateway-service/pom.xml -DskipTests
+
       - name: Set up Node.js 18
         uses: actions/setup-node@v4
         with:
@@ -64,6 +67,7 @@ jobs:
         run: |
           mvn -B install -DskipTests -f Backend/user-service/pom.xml
           mvn -B install -DskipTests -f Backend/notification-service/pom.xml
+          mvn -B install -DskipTests -f Backend/gateway-service/pom.xml
           mvn -B install -DskipTests -f Backend/eureka-server/pom.xml
 
       - name: SonarCloud Scan (Root Project)
@@ -99,6 +103,13 @@ jobs:
           context: Backend/notification-service
           push: true
           tags: ${{ env.DOCKER_USER }}/notification-service:latest
+
+      - name: Build and push Gateway Service Image
+        uses: docker/build-push-action@v5
+        with:
+          context: Backend/gateway-service
+          push: true
+          tags: ${{ env.DOCKER_USER }}/gateway-service:latest
           
       - name: Build and push Provider Service Image
         uses: docker/build-push-action@v5
@@ -129,5 +140,5 @@ jobs:
       - name: Deploy to Cloud (AWS / Remote server)
         run: |
           echo "Triggering deployment webhook..."
-          # Example for AWS Webhook: curl -X POST ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          # Example for AWS Webhook: curl -X POST ${ secrets.DEPLOY_WEBHOOK_URL }
           echo "Deployment triggered successfully!"
