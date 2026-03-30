@@ -11,7 +11,12 @@ export const bookAppointment = async (req, res) => {
     }
 
     const appointment = await Appointment.create({ customerId, providerId, date, time });
-    res.status(201).json(appointment);
+    
+    // Convert to object and rename _id to id for frontend compatibility
+    const appointmentObj = appointment.toObject();
+    appointmentObj.id = appointmentObj._id.toString();
+
+    res.status(201).json(appointmentObj);
   } catch (error) {
     return res.status(502).json({ message: error.message });
   }
@@ -20,12 +25,16 @@ export const bookAppointment = async (req, res) => {
 export const cancelAppointment = async (req, res) => {
   const { id } = req.params;
   try {
-    const appointment = await Appointment.findByPk(id);
+    const appointment = await Appointment.findById(id);
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
 
     appointment.status = 'CANCELLED';
     await appointment.save();
-    res.json(appointment);
+    
+    const appointmentObj = appointment.toObject();
+    appointmentObj.id = appointmentObj._id.toString();
+
+    res.json(appointmentObj);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -35,7 +44,7 @@ export const rescheduleAppointment = async (req, res) => {
   const { id } = req.params;
   const { date, time } = req.body;
   try {
-    const appointment = await Appointment.findByPk(id);
+    const appointment = await Appointment.findById(id);
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
 
     const isAvailable = await checkProviderAvailability(appointment.providerId, date, time);
@@ -45,7 +54,11 @@ export const rescheduleAppointment = async (req, res) => {
     appointment.time = time;
     appointment.status = 'RESCHEDULED';
     await appointment.save();
-    res.json(appointment);
+    
+    const appointmentObj = appointment.toObject();
+    appointmentObj.id = appointmentObj._id.toString();
+
+    res.json(appointmentObj);
   } catch (error) {
     return res.status(502).json({ message: error.message });
   }
@@ -53,8 +66,16 @@ export const rescheduleAppointment = async (req, res) => {
 
 export const getAppointments = async (_req, res) => {
   try {
-    const appointments = await Appointment.findAll();
-    res.json(appointments);
+    const appointments = await Appointment.find();
+    
+    // Map _id and created/updated to match frontend structure if needed
+    const formatted = appointments.map(a => {
+      const obj = a.toObject();
+      obj.id = obj._id.toString();
+      return obj;
+    });
+
+    res.json(formatted);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

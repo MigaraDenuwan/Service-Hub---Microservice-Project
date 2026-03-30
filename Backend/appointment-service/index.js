@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import sequelize from './config/db.js';
+import connectDB from './config/db.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 
 // Import and initialize Eureka client
@@ -28,12 +28,10 @@ const PORT = process.env.PORT || 5002;
 
 const startServer = async () => {
   try {
-    await sequelize.authenticate();
-    console.log('Connected to PostgreSQL');
-    await sequelize.sync();
+    await connectDB();
     app.listen(PORT, () => console.log(`Appointment service running on port ${PORT}`));
   } catch (error) {
-    console.error('Database connection failed:', error);
+    console.error('Failed to start server:', error);
   }
 };
 
