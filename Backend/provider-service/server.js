@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const providerRoutes = require('./routes/providerRoutes');
+const setupSwagger = require('./config/swagger');
+
 
 // Import and initialize Eureka client
 require('./eureka-client');
@@ -17,6 +19,10 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Setup Swagger
+setupSwagger(app);
+
 
 // Health Check Endpoint for Eureka
 app.get('/api/health', (req, res) => {

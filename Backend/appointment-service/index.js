@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
+import setupSwagger from './config/swagger.js';
+
 
 // Import and initialize Eureka client
 import './eureka-client.js';
@@ -16,6 +18,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+
+// Setup Swagger
+setupSwagger(app);
+
 
 // Health Check Endpoint for Eureka
 app.get('/api/health', (req, res) => {

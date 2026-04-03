@@ -17,6 +17,8 @@
     "express": "^5.1.0",
     "mongoose": "^8.15.1",
     "pg": "^8.16.0",
-    "retry-as-promised": "^7.1.1"
+    "retry-as-promised": "^7.1.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }
