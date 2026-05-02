@@ -95,6 +95,7 @@ const Navbar: React.FC = () => {
               </Link>
             </div>
           )}
+        </nav>
 
         {/* Mobile Menu Button */}
         <button 
