@@ -90,12 +90,11 @@ const Navbar: React.FC = () => {
               <Link to="/login" className="text-gray-700 hover:text-indigo-500 transition-colors">
                 Login
               </Link>
-              <Link to="/register" className="bg-black-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
+              <Link to="/register" className="bg-yellow-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
                 Sign Up
               </Link>
             </div>
           )}
-        </nav>
 
         {/* Mobile Menu Button */}
         <button 
